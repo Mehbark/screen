@@ -48,27 +48,8 @@ fn main() -> Result<()> {
         ],
     );
 
-    while window.is_open() && !window.is_key_down(Key::Escape) {
-        // for (b, (x, y)) in (*screen)
-        //     .iter_mut()
-        //     .zip((0..HEIGHT).cartesian_product(0..WIDTH))
-        // {
-        //     let x = x as isize;
-        //     let y = y as isize;
-        //     *b = if (y == tick || x == tick)
-        //         || [-20, -15, -10, -5, 0, 5, 10, 15, 20].into_iter().any(|o| {
-        //             (y == WIDTH as isize / 2 + o)
-        //                 || (x - 420 == HEIGHT as isize / 2 + o)
-        //                 || (x.saturating_add(o) == y)
-        //                 || ((WIDTH as isize - x).saturating_add(o) == y)
-        //         }) {
-        //         // fastrand::u32(..)
-
-        //         0xffffffff
-        //     } else {
-        //         0x00000000
-        //     }
-        // }
+    // while window.is_open() && !window.is_key_down(Key::Escape) {
+    for _ in 0..(5 * FPS) {
         screen.render();
         window.update_with_buffer(&screen, WIDTH, HEIGHT).unwrap();
         screen.tick();
@@ -76,3 +57,24 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+// for (b, (x, y)) in (*screen)
+//     .iter_mut()
+//     .zip((0..HEIGHT).cartesian_product(0..WIDTH))
+// {
+//     let x = x as isize;
+//     let y = y as isize;
+//     *b = if (y == tick || x == tick)
+//         || [-20, -15, -10, -5, 0, 5, 10, 15, 20].into_iter().any(|o| {
+//             (y == WIDTH as isize / 2 + o)
+//                 || (x - 420 == HEIGHT as isize / 2 + o)
+//                 || (x.saturating_add(o) == y)
+//                 || ((WIDTH as isize - x).saturating_add(o) == y)
+//         }) {
+//         // fastrand::u32(..)
+
+//         0xffffffff
+//     } else {
+//         0x00000000
+//     }
+// }

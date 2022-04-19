@@ -12,4 +12,5 @@ itertools = "0.10.3"
 minifb = "0.22.0"
 prime_tools = "0.3.4"
 
-[features]
+# [profile.release]
+# debug = true

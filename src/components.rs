@@ -99,11 +99,11 @@ impl Component for Breather {
                 if new == 255 || new == 0 {
                     self.direction = !self.direction;
                 }
-                println!("{new}");
+                // println!("{new}");
                 new
             })
         };
-        println!("{:#08x}", self.pixel.color);
+        // println!("{:#08x}", self.pixel.color);
     }
 }
 

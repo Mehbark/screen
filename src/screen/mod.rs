@@ -89,7 +89,7 @@ impl Screen {
             for pixel in child.render() {
                 new_pixels.push(pixel);
             }
-            println!("{child:#?}");
+            // println!("{child:#?}");
         }
 
         for pixel in new_pixels {
