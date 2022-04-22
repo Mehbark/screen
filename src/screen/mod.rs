@@ -1,12 +1,10 @@
-use std::fmt::Debug;
+use std::{collections::HashMap, fmt::Debug};
 mod pixel;
 pub use pixel::{Channel, Pixel, RgbaChannel};
-
-#[derive(Debug, Clone, Copy)]
-pub struct Pos {
-    pub x: usize,
-    pub y: usize,
-}
+mod pos;
+pub use pos::Pos;
+mod bounds;
+pub use bounds::Bounds;
 
 pub trait Component: Debug {
     fn render(&self) -> Vec<Pixel> {
@@ -21,7 +19,7 @@ pub struct Screen {
     buffer: Vec<u32>,
     width: usize,
     height: usize,
-    children: Vec<Box<dyn Component>>,
+    children: Vec<(Box<dyn Component>, Pos)>,
 }
 
 impl std::ops::Deref for Screen {
@@ -47,7 +45,7 @@ impl Screen {
         buffer: Vec<u32>,
         width: usize,
         height: usize,
-        children: Vec<Box<dyn Component>>,
+        children: Vec<(Box<dyn Component>, Pos)>,
     ) -> Self {
         Self {
             buffer,
@@ -83,24 +81,29 @@ impl Screen {
 
 impl Screen {
     pub fn render(&mut self) {
-        let mut new_pixels = Vec::new();
+        let mut new_pixels = HashMap::new();
 
         for child in &mut self.children {
-            for pixel in child.render() {
-                new_pixels.push(pixel);
+            for pixel in child.0.render() {
+                new_pixels.entry(child.1).or_insert(Vec::new()).push(pixel);
             }
             // println!("{child:#?}");
         }
 
-        for pixel in new_pixels {
-            let in_bounds = self.set_pixel(pixel);
-            assert!(in_bounds);
+        for (pos, pixels) in new_pixels {
+            for pixel in pixels {
+                let in_bounds = self.set_pixel(Pixel {
+                    color: pixel.color,
+                    pos: pixel.pos + pos,
+                });
+                // assert!(in_bounds);
+            }
         }
     }
 
     pub fn tick(&mut self) {
         for child in &mut self.children {
-            child.tick();
+            child.0.tick();
         }
     }
 }

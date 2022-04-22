@@ -1,30 +1,30 @@
 use color_eyre::Result;
+use components::Direction;
 use itertools::Itertools;
 use minifb::{Key, Window, WindowOptions};
 use prime_tools::is_u32_prime;
 mod components;
 mod screen;
 
-const WIDTH: usize = 640 * 3;
-const HEIGHT: usize = 360 * 3;
-const FPS: u64 = 60;
+const WIDTH: usize = 360 * 3;
+const HEIGHT: usize = 640 * 3;
+const FPS: u64 = 144;
 
 use crate::{
-    components::{Blinker, Breather},
-    screen::{Channel, Pixel, Pos, Screen},
+    components::{Blinker, Breather, FallingSand, Laser},
+    screen::{Bounds, Channel, Pixel, Pos, Screen},
 };
 
 fn main() -> Result<()> {
     color_eyre::install()?;
-    println!("Hello, world!");
 
     let mut window = Window::new(
-        "cool",
+        "cool - esc to close lol",
         WIDTH,
         HEIGHT,
         WindowOptions {
-            // transparency: true,
-            // borderless: true,
+            transparency: true,
+            borderless: true,
             ..Default::default()
         },
     )?;
@@ -37,22 +37,43 @@ fn main() -> Result<()> {
         WIDTH,
         HEIGHT,
         vec![
-            Box::new(Blinker::new(Pos { x: 0, y: 0 })),
-            Box::new(Breather::new(
-                Pixel {
-                    pos: Pos { x: 1, y: 0 },
-                    color: 0,
-                },
-                Channel::Green,
-            )),
+            // (Box::new(Blinker::new()), Pos { x: 0, y: 0 }),
+            // (
+            //     Box::new(Breather::new(0x00000000, Channel::Green)),
+            //     Pos { x: 1, y: 1 },
+            // ),
+            (
+                Box::new(Laser::new(
+                    Bounds {
+                        width: WIDTH,
+                        height: HEIGHT,
+                    },
+                    Pos { x: 0, y: 0 },
+                    0xfff0d9b5,
+                )),
+                Pos { x: 0, y: 0 },
+            ), // Box::new(FallingSand::new_num_sands(100, WIDTH, HEIGHT)),
+            (
+                Box::new(Laser::new(
+                    Bounds {
+                        width: WIDTH,
+                        height: HEIGHT,
+                    },
+                    Pos { x: 1, y: 0 },
+                    0xffb58863,
+                )),
+                Pos { x: 1, y: 0 },
+            ), // Box::new(FallingSand::new_num_sands(100, WIDTH, HEIGHT)),
         ],
     );
 
-    // while window.is_open() && !window.is_key_down(Key::Escape) {
-    for _ in 0..(5 * FPS) {
+    while window.is_open() && !window.is_key_down(Key::Escape) {
+        // for _ in 0..(5 * FPS) {
         screen.render();
         window.update_with_buffer(&screen, WIDTH, HEIGHT).unwrap();
-        screen.tick();
+        for _ in 0..10 {
+            screen.tick();
+        }
     }
 
     Ok(())

@@ -1,12 +1,18 @@
-use super::Pos;
+use super::{Component, Pos};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct Pixel {
     pub pos: Pos,
     pub color: u32,
 }
 
-#[derive(Debug, Clone, Copy)]
+impl Component for Pixel {
+    fn render(&self) -> Vec<Pixel> {
+        vec![*self]
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Channel {
     Alpha,
     Red,
